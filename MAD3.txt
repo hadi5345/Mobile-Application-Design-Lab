@@ -1,0 +1,346 @@
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.deepPurple,
+        scaffoldBackgroundColor: Colors.grey[200],
+      ),
+      home: AuthScreen(),
+    );
+  }
+}
+
+class AuthScreen extends StatefulWidget {
+  @override
+  _AuthScreenState createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  bool isLogin = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurple, Colors.purpleAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isLogin ? 'LOGIN' : 'REGISTER',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                if (!isLogin)
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                SizedBox(height: 10),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  ),
+                  child: Text(isLogin ? 'Login' : 'Register',
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() => isLogin = !isLogin);
+                  },
+                  child: Text(
+                    isLogin
+                        ? 'Create an account'
+                        : 'Already have an account? Login',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    ProfileScreen(),
+  ];
+
+
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+        backgroundColor: Colors.deepPurple,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey[300],
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xffcbde21), Colors.deepPurple],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(16),
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage('assets/image1.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemCount: 10,
+                itemBuilder: (context, index) => Card(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Expanded(child: Container(color: Colors.grey)),
+                      Text('Item $index',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('\$${(index + 1) * 10}',
+                          style: TextStyle(color: Colors.deepPurple)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xffe8e50f), Colors.purpleAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(radius: 50, backgroundColor: Colors.white),
+            SizedBox(height: 20),
+            Text('Name: xyz', style: TextStyle(color: Colors.white)),
+            Text('Email: user@example.com',
+                style: TextStyle(color: Colors.white)),
+            Text('Password: ********', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyCalculatorApp());
+}
+
+class MyCalculatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: CalculatorScreen(),
+    );
+  }
+}
+
+class CalculatorScreen extends StatefulWidget {
+  @override
+  _CalculatorScreenState createState() => _CalculatorScreenState();
+}
+
+class _CalculatorScreenState extends State<CalculatorScreen> {
+  TextEditingController num1Controller = TextEditingController();
+  TextEditingController num2Controller = TextEditingController();
+  double result = 0.0;
+
+  void calculate(String operator) {
+    double num1 = double.tryParse(num1Controller.text) ?? 0;
+    double num2 = double.tryParse(num2Controller.text) ?? 0;
+
+    setState(() {
+      if (operator == '+') {
+        result = num1 + num2;
+      } else if (operator == '-') {
+        result = num1 - num2;
+      } else if (operator == '×') {
+        result = num1 * num2;
+      } else if (operator == '÷') {
+        result = num2 != 0 ? num1 / num2 : 0; // Avoid division by zero
+      }
+    });
+  }
+
+
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My Calculator"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
+      backgroundColor: Colors.yellow, // Set background color to yellow
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: num1Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Input 1",
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: num2Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Input 2",
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => calculate('+'),
+                  child: Text('+'),
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('-'),
+                  child: Text('-'),
+                ),
+
+ElevatedButton(
+                  onPressed: () => calculate('×'),
+                  child: Text('×'),
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('÷'),
+                  child: Text('÷'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              "The Ans: $result",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+md Awal Hadi

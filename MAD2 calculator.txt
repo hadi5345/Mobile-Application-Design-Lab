@@ -1,0 +1,111 @@
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyCalculatorApp());
+}
+
+class MyCalculatorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: CalculatorScreen(),
+    );
+  }
+}
+
+class CalculatorScreen extends StatefulWidget {
+  @override
+  _CalculatorScreenState createState() => _CalculatorScreenState();
+}
+
+class _CalculatorScreenState extends State<CalculatorScreen> {
+  TextEditingController num1Controller = TextEditingController();
+  TextEditingController num2Controller = TextEditingController();
+  double result = 0.0;
+
+  void calculate(String operator) {
+    double num1 = double.tryParse(num1Controller.text) ?? 0;
+    double num2 = double.tryParse(num2Controller.text) ?? 0;
+
+    setState(() {
+      if (operator == '+') {
+        result = num1 + num2;
+      } else if (operator == '-') {
+        result = num1 - num2;
+      } else if (operator == '×') {
+        result = num1 * num2;
+      } else if (operator == '÷') {
+        result = num2 != 0 ? num1 / num2 : 0; // Avoid division by zero
+      }
+    });
+  }
+
+Hadi ✨, [4/9/2025 10:53 PM]
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("My Calculator"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
+      backgroundColor: Colors.yellow, // Set background color to yellow
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: num1Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Input 1",
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: num2Controller,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Input 2",
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => calculate('+'),
+                  child: Text('+'),
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('-'),
+                  child: Text('-'),
+                ),
+
+MD. Âwal ✨, [4/9/2025 10:53 PM]
+ElevatedButton(
+                  onPressed: () => calculate('×'),
+                  child: Text('×'),
+                ),
+                ElevatedButton(
+                  onPressed: () => calculate('÷'),
+                  child: Text('÷'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              "The Ans: $result",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

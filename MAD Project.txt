@@ -1,0 +1,549 @@
+Awal Hadi, [4/12/2025 11:56 PM]
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(GreenCartApp());
+}
+
+class GreenCartApp extends StatelessWidget {
+  const GreenCartApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'GreenCart',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: LoginPage(),
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final Map<String, String> registeredUsers = {};
+
+  final FocusNode emailFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+
+  void login() {
+    if (registeredUsers.containsKey(emailController.text) &&
+        registeredUsers[emailController.text] == passwordController.text) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(userName: emailController.text)),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Invalid email or password')),
+      );
+    }
+  }
+
+  void handleArrowKey() {
+    if (emailFocusNode.hasFocus) {
+      FocusScope.of(context).requestFocus(passwordFocusNode);
+    } else if (passwordFocusNode.hasFocus) {
+      login();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Login')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailController,
+              focusNode: emailFocusNode,
+              decoration: InputDecoration(labelText: 'Email'),
+              onSubmitted: (_) => handleArrowKey(),
+            ),
+            TextField(
+              controller: passwordController,
+              focusNode: passwordFocusNode,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+              onSubmitted: (_) => handleArrowKey(),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(onPressed: login, child: Text('Login')),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterPage(registeredUsers)),
+                );
+              },
+              child: Text('Don\'t have an account? Register'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterPage extends StatefulWidget {
+  final Map<String, String> registeredUsers;
+
+  const RegisterPage(this.registeredUsers, {super.key});
+
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  void register() {
+    if (emailController.text.isNotEmpty &&
+        passwordController.text == confirmPasswordController.text) {
+      widget.registeredUsers[emailController.text] = passwordController.text;
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Passwords do not match or email is empty')),
+      );
+    }
+  }
+
+Awal Hadi, [4/12/2025 11:56 PM]
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Register')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            TextField(
+              controller: confirmPasswordController,
+              decoration: InputDecoration(labelText: 'Confirm Password'),
+              obscureText: true,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(onPressed: register, child: Text('Register')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  final String userName;
+
+  const HomeScreen({super.key, required this.userName});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final List<String> categories = ['Vegetables', 'Fruits', 'Bakery', 'Meat', 'Dairy'];
+  final Map<String, List<Map<String, String>>> categoryProducts = {
+    'Vegetables': [
+      {'name': 'Fresh Tomato', 'price': '\$1.99', 'image': 'https://media.istockphoto.com/id/831570242/photo/three-juicy-red-tomatoes-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=bBrjZsWY4eg90OpA2S6cO3psGR1TFx8f4L0HAmIQqm4='},
+      {'name': 'Potatoes', 'price': '\$2.99', 'image': 'https://media.gettyimages.com/id/157430678/photo/three-potatoes.jpg?s=612x612&w=gi&k=20&c=kwOHc47iF06VzVA58qB33IV6WPy1eNkaDYGnS99sLig='},
+    ],
+    'Fruits': [
+      {'name': 'Apple', 'price': '\$1.50', 'image': 'https://media.istockphoto.com/id/184276818/photo/red-apple.jpg?s=612x612&w=0&k=20&c=NvO-bLsG0DJ_7Ii8SSVoKLurzjmV0Qi4eGfn6nW3l5w='},
+      {'name': 'Banana', 'price': '\$0.99', 'image': 'https://media.istockphoto.com/id/173242750/photo/banana-bunch.jpg?s=612x612&w=0&k=20&c=MAc8AXVz5KxwWeEmh75WwH6j_HouRczBFAhulLAtRUU='},
+    ],
+    'Bakery': [
+      {'name': 'Bread', 'price': '\$2.49', 'image': 'https://media.istockphoto.com/id/92206322/photo/sliced-loaf-of-bread-isolated-on-white.jpg?s=612x612&w=0&k=20&c=YJ7EVbkl5OLKG6pf_i4agjh-MsGrn4htLKkprlttzHM='},
+    ],
+    'Meat': [
+      {'name': 'Salmon Fillet', 'price': '\$9.99', 'image': 'https://media.istockphoto.com/id/1071096328/photo/fresh-salmon-fillets.jpg?s=612x612&w=0&k=20&c=g6Q1BeHK4GWxE6LmTA0AyefZwK4pOLmvorXdkK8yp8Y='},
+    ],
+    'Dairy': [
+      {'name': 'Organic Eggs', 'price': '\$3.49', 'image': 'https://media.istockphoto.com/id/1474901155/photo/fresh-organic-chicken-eggs.jpg?s=612x612&w=0&k=20&c=VS7iD9xIgu5ZQFcUyMyE5twR3dkQfp3C_XjB7FdbltU='},
+    ],
+  };
+
+  String selectedCategory = 'Vegetables';
+  List<Map<String, String>> filteredProducts = [];
+  String searchQuery = '';
+  List<Map<String, dynamic>> cartItems = [];
+  bool isSearchVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredProducts = categoryProducts[selectedCategory] ?? [];
+  }
+
+  void updateSearchQuery(String query) {
+    setState(() {
+      searchQuery = query;
+      filteredProducts.clear();
+      bool productFound = false;
+      categoryProducts.forEach((category, products) {
+        filteredProducts.addAll(
+          products.where((product) {
+            bool match = product['name']!.toLowerCase().contains(searchQuery.toLowerCase());
+            if (match) productFound = true;
+            return match;
+          }).toList(),
+        );
+      });
+
+      if (!productFound) {
+        filteredProducts = [{'name': 'Product Not Found', 'price': '', 'image': ''}];
+      }
+    });
+  }
+
+  void addToCart(Map<String, String> product) {
+    setState(() {
+      bool exists = false;
+      for (var item in cartItems) {
+        if (item['name'] == product['name']) {
+          item['quantity'] += 1;
+          exists = true;
+          break;
+        }
+      }
+
+Awal Hadi, [4/12/2025 11:56 PM]
+if (!exists) {
+        cartItems.add({
+          'name': product['name'],
+          'price': product['price'],
+          'image': product['image'],
+          'quantity': 1,
+        });
+      }
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('${product['name']} added to cart'),
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  void removeFromCart(Map<String, dynamic> product) {
+    setState(() {
+      cartItems.remove(product);
+    });
+  }
+
+  void updateQuantity(Map<String, dynamic> product, int change) {
+    setState(() {
+      product['quantity'] += change;
+      if (product['quantity'] <= 0) {
+        cartItems.remove(product);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('GreenCart'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage(userName: widget.userName, purchaseHistory: cartItems)),
+              );
+            },
+            icon: Icon(Icons.account_circle),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('Hello ${widget.userName}', style: TextStyle(fontSize: 16)),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Visibility(
+            visible: isSearchVisible,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                onChanged: updateSearchQuery,
+                onSubmitted: updateSearchQuery,
+                decoration: InputDecoration(
+                  hintText: 'Search products...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 80,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: ChoiceChip(
+                    label: Text(category),
+                    selected: selectedCategory == category,
+                    onSelected: (_) {
+                      setState(() {
+                        selectedCategory = category;
+                        filteredProducts = categoryProducts[selectedCategory] ?? [];
+                      });
+                    },
+                    selectedColor: Colors.green.shade300,
+                    backgroundColor: Colors.green.shade100,
+                  ),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: GridView.builder(
+              itemCount: filteredProducts.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return GestureDetector(
+                  onTap: () {
+                    if (product['name'] != 'Product Not Found') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsPage(product: product),
+                        ),
+                      );
+                    }
+                  },
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+Awal Hadi, [4/12/2025 11:56 PM]
+Image.network(product['image']!, height: 100, width: double.infinity, fit: BoxFit.cover),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(product['name']!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text(product['price']!, style: TextStyle(fontSize: 14, color: Colors.green)),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (product['name'] != 'Product Not Found') {
+                                    addToCart(product);
+                                  }
+                                },
+                                child: Text('Add to Cart'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+        ],
+        onTap: (index) {
+          if (index == 1) {
+            setState(() {
+              isSearchVisible = !isSearchVisible;
+            });
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartPage(cartItems: cartItems, removeFromCart: removeFromCart, updateQuantity: updateQuantity)),
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CartPage extends StatelessWidget {
+  final List<Map<String, dynamic>> cartItems;
+  final Function(Map<String, dynamic>, int) updateQuantity;
+  final Function(Map<String, dynamic>) removeFromCart;
+
+  const CartPage({super.key, required this.cartItems, required this.removeFromCart, required this.updateQuantity});
+
+  @override
+  Widget build(BuildContext context) {
+    double totalPrice = cartItems.fold(0, (sum, item) {
+      return sum + double.parse(item['price']!.substring(1)) * item['quantity'];
+    });
+
+Awal Hadi, [4/12/2025 11:56 PM]
+return Scaffold(
+      appBar: AppBar(title: Text('Your Cart')),
+      body: cartItems.isEmpty
+          ? Center(child: Text('Your cart is empty'))
+          : ListView.builder(
+              itemCount: cartItems.length,
+              itemBuilder: (context, index) {
+                final product = cartItems[index];
+                return ListTile(
+                  leading: Image.network(product['image']!, width: 50, height: 50, fit: BoxFit.cover),
+                  title: Text(product['name']),
+                  subtitle: Text('${product['price']} x ${product['quantity']}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () => updateQuantity(product, 1),
+                        icon: Icon(Icons.add),
+                      ),
+                      IconButton(
+                        onPressed: () => updateQuantity(product, -1),
+                        icon: Icon(Icons.remove),
+                      ),
+                      IconButton(
+                        onPressed: () => removeFromCart(product),
+                        icon: Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+      bottomSheet: cartItems.isEmpty
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Proceeding to Checkout...')),
+                  );
+                },
+                child: Text('Checkout - \$${totalPrice.toStringAsFixed(2)}'),
+              ),
+            ),
+    );
+  }
+}
+
+class ProductDetailsPage extends StatelessWidget {
+  final Map<String, String> product;
+
+  const ProductDetailsPage({super.key, required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(product['name']!)),
+      body: Column(
+        children: [
+          Image.network(product['image']!, height: 200, width: double.infinity, fit: BoxFit.cover),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(product['name']!, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text('Price: ${product['price']!}', style: TextStyle(fontSize: 20)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  final String userName;
+  final List<Map<String, dynamic>> purchaseHistory;
+
+  const ProfilePage({super.key, required this.userName, required this.purchaseHistory});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Profile - $userName')),
+      body: Column(
+        children: [
+          ListTile(
+            title: Text('Username: $userName'),
+          ),
+          ListTile(
+            title: Text('Email: $userName@gmail.com'),
+          ),
+          ListTile(
+            title: Text('Membership: Premium'),
+          ),
+          ListTile(
+            title: Text('Purchase History:'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: purchaseHistory.length,
+              itemBuilder: (context, index) {
+                final item = purchaseHistory[index];
+                return ListTile(
+                  title: Text(item['name']),
+                  subtitle: Text('${item['price']} x ${item['quantity']}'),
+                );
+              },
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              
+            },
+            child: Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
+}
